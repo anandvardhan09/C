@@ -11,11 +11,8 @@ printf("Incorrect Value");
 
 }
 list = (int *) malloc(n * sizeof(int));
-if (!list)
-{
-printf("Insufficient Memory");
 
-}
+
 /* Allow the users to enter values and display it*/
 /* print the values */
 free(list);
