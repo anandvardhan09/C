@@ -1,6 +1,6 @@
-
 #include<stdio.h>
-#include<malloc.h>
+#include<stdlib.h>
+#include <stddef.h>
 
 struct node
 {
