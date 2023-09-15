@@ -1,123 +1,179 @@
-
-#include <stdio.h>
-#include <stdlib.h>
-
-
-struct node {
-    int coeff;
-    int exp;
-    struct node* next;
+#include<stdio.h>
+#include<malloc.h>
+struct node
+{
+ int coeff;
+ int power;
+ struct node *next;
 };
 
+struct node *start1=NULL;
+struct node *start2=NULL;
+struct node *start3=NULL;
 
-struct node* create_22054408(int coeff, int exp) {
-    struct node* newnode = (struct node*)malloc(sizeof(struct node));
-    if (newnode == NULL) {
-        printf("Memory allocation failed!\n");
-        exit(1);
-    }
-    newnode->coeff = coeff;
-    newnode->exp = exp;
-    newnode->next = NULL;
-    return newnode;
+struct node *create_poly(struct node *start)
+{
+
+  struct node *new_node,*ptr;
+  int c,p;
+  printf("\n Enter the coefficient:");
+  scanf("%d",&c);
+  printf("\n Enter the power:");
+  scanf("%d",&p);
+
+while(p !=-1)
+{
+    new_node=(struct node *)malloc(sizeof(struct node));
+    new_node->coeff=c;
+    new_node->power=p;
+    new_node->next=NULL;
+
+  if(start==NULL)
+  {
+    
+    start=new_node;
+    ptr=start;
+  }
+
+else
+  {
+     
+    ptr->next=new_node;
+    ptr=new_node;
+  }
+
+  printf("\n Enter the coefficient:");
+  scanf("%d",&c);
+  printf("\n Enter the power:");
+  scanf("%d",&p);
+}
+return start;
+}
+
+struct node *display_poly(struct node *start)
+{
+  struct node *ptr;
+  ptr=start;
+
+  while(ptr != NULL)
+  {
+
+    printf("\n %d x %d \t",ptr->coeff,ptr->power);
+    ptr=ptr->next;
+  }
+  return start;
+}
+
+struct node *add_node(struct node *start,int c, int p)
+{
+
+  struct node *ptr, *new_node;
+
+  if(start==NULL)
+  {
+
+   new_node=(struct node *)malloc(sizeof(struct node));
+   new_node->coeff=c;
+   new_node->power=p;
+   new_node->next=NULL;
+   start=new_node;
+  }
+  else
+  {
+    ptr=start;
+    while(ptr->next != NULL)
+    ptr=ptr->next;
+
+    new_node=(struct node *)malloc(sizeof(struct node));
+    new_node->coeff=c;
+    new_node->power=p;
+    new_node->next=NULL;
+    ptr->next=new_node;
+  }
+
+ return start;
+
 }
 
 
-void addnode(struct node** poly, int coeff, int exp) {
-    struct node* newnode = create_22054408(coeff, exp);
-    if (*poly == NULL) {
-        *poly = newnode;
-    } else {
-        struct node* current = *poly;
-        while (current->next != NULL) {
-            current = current->next;
-        }
-        current->next = newnode;
-    }
+
+struct node *add_poly(struct node *start1,struct node *start2,struct node *start3)
+{
+ 
+ struct node *ptr1,*ptr2;
+ int sum;
+
+ptr1=start1;
+ptr2=start2;
+
+while(ptr1 != NULL && ptr2 != NULL)
+{
+ 
+  if(ptr1->power == ptr2->power)
+  {
+    sum=ptr1->coeff + ptr2->coeff;
+    start3=add_node(start3, sum, ptr1->power);
+    ptr1=ptr1->next;
+    ptr2=ptr2->next;
+  }
+
+else if(ptr1->power > ptr2->power)
+{
+ 
+  start3=add_node(start3, ptr1->coeff, ptr1->power);
+  ptr1=ptr1->next;
+
+}
+else if(ptr1->power < ptr2->power)
+{
+ 
+  start3=add_node(start3, ptr2->coeff, ptr2->power);
+  ptr2=ptr2->next;
+
+}
+}
+
+if(ptr1==NULL)
+{
+  while(ptr2 != NULL)
+ {
+  start3=add_node(start3, ptr2->coeff, ptr2->power);
+  ptr2=ptr2->next;
+ }
+}
+
+if(ptr2==NULL)
+{
+  while(ptr1 != NULL)
+ {
+  start3=add_node(start3, ptr1->coeff, ptr1->power);
+  ptr1=ptr1->next;
+ }
+}
+
+return start3;
 }
 
 
-struct node* multiply_poly_22054408(struct node* poly1, struct node* poly2) {
-    struct node* result = NULL;
 
+int main()
+{
 
-    while (poly1 != NULL) {
-        struct node* ptr1 = poly2;
-        while (ptr1 != NULL) {
-            int new_coeff = poly1->coeff * ptr1->coeff;
-            int new_exp = poly1->exp + ptr1->exp;
-            addnode(&result, new_coeff, new_exp);
-            ptr1 = ptr1->next;
-        }
-        poly1 = poly1->next;
-    }
+ printf("\n Enter the first polynomial");
+ start1=create_poly(start1);
+ printf("\n Display the first polynomial");
+ start1=display_poly(start1);
 
-    return result;
-}
+ printf("\n Enter the second polynomial");
+ start2=create_poly(start2);
+ printf("\n Display the second polynomial");
+ start2=display_poly(start2);
 
+ printf("\n Add the two polynomials");
+ start3=add_poly(start1,start2,start3);
 
-void display_22054408(struct node* poly) {
-    if (poly == NULL) {
-        printf("0\n");
-        return;
-    }
+ printf("\n Display the result");
+ start3=display_poly(start3);
 
-    while (poly != NULL) {
-        printf("%d", poly->coeff);
-        if (poly->exp != 0) {
-            printf("x^%d", poly->exp);
-        }
-
-        if (poly->next != NULL) {
-            printf(" + ");
-        } else {
-            printf("\n");
-        }
-
-        poly = poly->next;
-    }
-}
-
-
-void freePolynomial(struct node* poly) {
-    while (poly != NULL) {
-        struct node* ptr1 = poly;
-        poly = poly->next;
-        free(ptr1);
-    }
-}
-
-int main() {
-    struct node* poly1 = NULL;
-    struct node* poly2 = NULL;
-
-   
-    addnode(&poly1, 1, 2);
-    addnode(&poly1, 3, 1);
-    addnode(&poly1, 6, 0);
-
-   
-    addnode(&poly2, 3, 3);
-    addnode(&poly2, 5, 2);
-    addnode(&poly2, 7, 0);
-
-  
-    printf("First Polynomial: ");
-    display_22054408(poly1);
-
-
-    printf("Second Polynomial: ");
-    display_22054408(poly2);
-
-  
-    struct node* result = multiply_poly_22054408(poly1, poly2);
-    printf("Multiplication of Polynomials: ");
-    display_22054408(result);
-
-
-    freePolynomial(poly1);
-    freePolynomial(poly2);
-    freePolynomial(result);
-
-    return 0;
+ return 0;
 }
